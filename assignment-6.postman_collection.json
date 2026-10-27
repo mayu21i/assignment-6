@@ -1,0 +1,490 @@
+{
+  "info": {
+    "_postman_id": "785f702d-c0ff-4210-b686-848d51617e32",
+    "name": "assignment-6",
+    "description": "Assignment 6 MongoDB APIs. Run Collection Setup first, then Books, then Logs and Join. DeleteBooksBeforeYear deletes matching records.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58348407",
+    "_collection_link": "https://go.postman.co/collection/58348407-785f702d-c0ff-4210-b686-848d51617e32?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Collection Setup",
+      "item": [
+        {
+          "name": "CreateBooksCollection",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/collection/books",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "collection",
+                "books"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateAuthor",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Author1\",\n  \"nationality\": \"British\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/collection/authors",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "collection",
+                "authors"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateCappedLogsCollection",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/collection/logs/capped",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "collection",
+                "logs",
+                "capped"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CreateBooksTitleIndex",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/collection/books/index",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "collection",
+                "books",
+                "index"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Books",
+      "item": [
+        {
+          "name": "AddBook",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Book was created', () => pm.expect(pm.response.code).to.eql(201));",
+                  "const result = pm.response.json();",
+                  "pm.collectionVariables.set('sampleBookId', result.insertedId);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Book1\",\n  \"author\": \"Ali\",\n  \"year\": 1937,\n  \"genres\": [\"Fantasy\", \"Adventure\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/books",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AddBooksBatch",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"title\": \"Future\", \"author\": \"George Orwell\", \"year\": 2020, \"genres\": [\"Science Fiction\"]\n  },\n  {\n    \"title\": \"To Kill a Mockingbird\", \"author\": \"Harper Lee\", \"year\": 1960, \"genres\": [\"Classic\", \"Fiction\"]\n  },\n  {\n    \"title\": \"Brave New World\", \"author\": \"Aldous Huxley\", \"year\": 2006, \"genres\": [\"Dystopian\", \"Science Fiction\"]\n  },\n  {\n    \"title\": \"The Great Gatsby\", \"author\": \"F. Scott Fitzgerald\", \"year\": 1925, \"genres\": [\"Classic\", \"Fiction\"]\n  },\n  {\n    \"title\": \"Moby Dick\", \"author\": \"Herman Melville\", \"year\": 1851, \"genres\": [\"Adventure\", \"Classic\"]\n  },\n  {\n    \"title\": \"War and Peace\", \"author\": \"Leo Tolstoy\", \"year\": 1869, \"genres\": [\"Historical Fiction\", \"Philosophy\"]\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/books/batch",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books",
+                "batch"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UpdateFutureBookYear",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/books/Future",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books",
+                "Future"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FindBookByTitle",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/books/title?title=Brave New World",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books",
+                "title"
+              ],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "Brave New World"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FindBooksByYearRange",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/books/year?from=1990&to=2010",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books",
+                "year"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "1990"
+                },
+                {
+                  "key": "to",
+                  "value": "2010"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FindBooksByGenre",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/books/genre?genre=Science Fiction",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books",
+                "genre"
+              ],
+              "query": [
+                {
+                  "key": "genre",
+                  "value": "Science Fiction"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetBooksWithSkipAndLimit",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/books/skip-limit",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books",
+                "skip-limit"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetBooksWithIntegerYear",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/books/year-integer",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books",
+                "year-integer"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetBooksExcludingGenres",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/books/exclude-genres",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books",
+                "exclude-genres"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DeleteBooksBeforeYear",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/books/before-year?year=2000",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books",
+                "before-year"
+              ],
+              "query": [
+                {
+                  "key": "year",
+                  "value": "2000"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AggregateBooksAfter2000Sorted",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/books/aggregate1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books",
+                "aggregate1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AggregateBookTitleAuthorYearAfter2000",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/books/aggregate2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books",
+                "aggregate2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AggregateBooksUnwindGenres",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/books/aggregate3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books",
+                "aggregate3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Logs and Join",
+      "item": [
+        {
+          "name": "AddLog",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"book_id\": \"{{sampleBookId}}\",\n  \"action\": \"borrowed\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/logs",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "logs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AggregateLogsWithBookDetails",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/books/aggregate4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "books",
+                "aggregate4"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "sampleBookId",
+      "value": ""
+    }
+  ]
+}
